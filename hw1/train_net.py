@@ -61,16 +61,16 @@ def main():
     obs_dim = obs_data.shape[1]
     act_dim = act_data.shape[1]
 
-    learning_rate = 0.01
-    training_iters = 5
-    batch_size = 10
-    display_step = 100
+    learning_rate = 0.005
+    batch_size = 1000
+    training_iters = 100
+    display_step = 20
 
-    beta = 0.01
+    beta = 0.001
 
     n_input = obs_dim
-    n_hidden1 = 40
-    n_hidden2 = 20
+    n_hidden1 = 128
+    n_hidden2 = 64
     n_classes = act_dim
 
     x = tf.placeholder(tf.float32, [None, n_input])
@@ -92,16 +92,18 @@ def main():
 
     def net(x,weights, biases):
         h1 = tf.add(tf.matmul(x, weights['h1']), biases['h1'])
-        h1_drop = tf.nn.dropout(h1, keep_prob)
-        h2 = tf.add(tf.matmul(h1_drop, weights['h2']), biases['h2'])
-        h2_drop = tf.nn.dropout(h2, keep_prob)
-        result = tf.add(tf.matmul(h2_drop, weights['out']),biases['out'])
+        #h1_drop = tf.nn.dropout(h1, keep_prob)
+        h1_relu = tf.nn.tanh(h1)
+        h2 = tf.add(tf.matmul(h1_relu, weights['h2']), biases['h2'])
+        #h2_drop = tf.nn.dropout(h2, keep_prob)
+        h2_relu = tf.nn.tanh(h2)
+        result = tf.add(tf.matmul(h2_relu, weights['out']),biases['out'])
 
         return result
 
     y_conv = net(x, weights, biases)
 
-    cross_entropy = tf.losses.mean_pairwise_squared_error(y_, y_conv)
+    cross_entropy = tf.losses.absolute_difference(y_, y_conv)
 
     #cross_entropy = - tf.reduce_mean(tf.abs(y_- y_conv))
 
@@ -119,7 +121,7 @@ def main():
 
 
         for it in range(training_iters):
-            step = 1
+            step = 0
             stop = False
 
             (batch_x, batch_y) = next_batch(obs_data, act_data, step, batch_size)
