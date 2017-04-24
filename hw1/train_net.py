@@ -55,22 +55,35 @@ def main():
     parser.add_argument("--max_timesteps", type=int)
     parser.add_argument('--num_rollouts', type=int, default=20,
                         help='Number of policy roll outs')
+
+    parser.add_argument('--learning_rate', type=float, default=0.005)
+    parser.add_argument('--batch_size', type=int, default=2000)
+    parser.add_argument('--training_iters', type=int, default = 500)
+    parser.add_argument('--display_step', type=int, default = 20)
+
+    parser.add_argument('--beta', type=float, default = 0.001)
+
+    parser.add_argument('--n_hidden1', type=int, default = 128)
+    parser.add_argument('--n_hidden2', type=int, default = 64)
+
     args = parser.parse_args()
+
+    learning_rate = args.learning_rate
+    batch_size = args.batch_size
+    training_iters = args.training_iters
+    display_step = args.display_step
+
+    beta = args.beta
+
+    n_hidden1 = args.n_hidden1
+    n_hidden2 = args.n_hidden2
 
     obs_data, act_data = load_run(args.filename)
     obs_dim = obs_data.shape[1]
     act_dim = act_data.shape[1]
 
-    learning_rate = 0.005
-    batch_size = 2000
-    training_iters = 500
-    display_step = 20
-
-    beta = 0.001
 
     n_input = obs_dim
-    n_hidden1 = 128
-    n_hidden2 = 64
     n_classes = act_dim
 
     x = tf.placeholder(tf.float32, [None, n_input])
