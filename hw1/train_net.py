@@ -62,8 +62,8 @@ def main():
     act_dim = act_data.shape[1]
 
     learning_rate = 0.005
-    batch_size = 1000
-    training_iters = 100
+    batch_size = 2000
+    training_iters = 500
     display_step = 20
 
     beta = 0.001
